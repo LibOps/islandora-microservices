@@ -4,13 +4,12 @@ on:
   pull_request:
     branches:
       - main
-
+env:
+  TF_VAR_project: ${{ secrets.GCLOUD_PROJECT }}
 jobs:
   terraform:
     name: Run Terraform Plan
     runs-on: ubuntu-latest
-    env:
-      TF_VAR_project: ${{ secrets.GCLOUD_PROJECT }}
     permissions:
       id-token: write
       contents: read
