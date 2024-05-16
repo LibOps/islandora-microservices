@@ -1,0 +1,10 @@
+terraform.tfstate.backup
+.terraform
+*.zip
+plan.file
+plan.json
+plan.txt
+*.tfstate
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+
