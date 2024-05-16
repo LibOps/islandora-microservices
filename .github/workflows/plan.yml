@@ -1,0 +1,85 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    name: Run Terraform Plan
+    runs-on: ubuntu-latest
+    env:
+      TF_VAR_project: ${{ secrets.GCLOUD_PROJECT }}
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.7
+
+    - name: lint
+      run: terraform fmt *.tf modules/*/*.tf
+      shell: bash
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        version: 'latest'
+
+    - name: Authenticate to Google Cloud
+      id: 'auth'
+      uses: google-github-actions/auth@v1
+      with:
+        workload_identity_provider: ${{ secrets.GCLOUD_OIDC_POOL }}
+        service_account: ${{ secrets.GSA }}
+
+    - name: Configure gcloud
+      run: |
+        gcloud config set project ${{ secrets.GCLOUD_PROJECT }}
+        gcloud config set disable_prompts true
+
+    - name: Terraform Init
+      run: terraform init -upgrade
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan
+
+    - name: Post plan result to PR
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const planOutput = require('fs').readFileSync('plan.log', 'utf8');
+          const issue_number = context.payload.pull_request.number;
+          const commentBody = `## Terraform Plan\n\`\`\`\n${planOutput}\n\`\`\``;
+          const comments = await github.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number,
+          });
+
+          const botComment = comments.data.find(comment => comment.user.login === 'github-actions[bot]');
+          if (botComment) {
+            await github.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: commentBody,
+            });
+          } else {
+            await github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number,
+              body: commentBody,
+            });
+          }
+
