@@ -39,11 +39,19 @@ jobs:
       with:
         workload_identity_provider: ${{ secrets.GCLOUD_OIDC_POOL }}
         service_account: ${{ secrets.GSA }}
+        token_format: 'access_token'
 
     - name: Configure gcloud
       run: |
         gcloud config set project ${{ secrets.GCLOUD_PROJECT }}
         gcloud config set disable_prompts true
+
+    - uses: 'docker/login-action@v3'
+      name: 'Docker login'
+      with:
+        registry: 'us-docker.pkg.dev'
+        username: 'oauth2accesstoken'
+        password: '${{ steps.auth.outputs.access_token }}'
 
     - name: Terraform Init
       run: terraform init -upgrade
