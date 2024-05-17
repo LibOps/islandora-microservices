@@ -108,9 +108,9 @@ resource "google_cloud_run_service" "cloudrun" {
 }
 
 resource "google_cloud_run_service_iam_member" "invoker" {
-  for_each = toset(var.invokers)
-  location = google_cloud_run_service.cloudrun[0].location
-  service  = google_cloud_run_service.cloudrun[0].name
+  count    = length(var.regions)
+  location = google_cloud_run_service.cloudrun[count.index].location
+  service  = google_cloud_run_service.cloudrun[count.index].name
   role     = "roles/run.invoker"
-  member   = each.value
+  member   = "allUsers"
 }

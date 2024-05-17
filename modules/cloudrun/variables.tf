@@ -26,10 +26,6 @@ variable "regions" {
   description = "The GCP region(s) to deploy to"
 }
 
-variable "invokers" {
-  type = list(string)
-}
-
 variable "project" {
   type        = string
   description = "The GCP project to use"
