@@ -101,8 +101,36 @@ module "crayfits" {
     {
       name           = "crayfits",
       image          = "us-docker.pkg.dev/${var.project}/shared/fits:main",
-      port           = 8080
+      port           = 8888
       liveness_probe = "/healthcheck"
+    },
+    {
+      name   = "harvard-fits",
+      image  = "us-docker.pkg.dev/${var.project}/shared/harvard-fits:main",
+      memory = "2Gi"
+      cpu    = "2000m"
+    }
+  ])
+  addl_env_vars = tolist([
+    {
+      name  = "PORT"
+      value = "8888"
+    },
+    {
+      name  = "SCYLLARIDAE_YML"
+      value = <<EOT
+allowedMimeTypes:
+  - "*"
+cmdByMimeType:
+  default:
+    cmd: "curl"
+    args:
+      - "-X"
+      - "POST"
+      - "-F"
+      - "datafile=@-"
+      - "http://localhost:8080/fits/examine"
+EOT
     }
   ])
   providers = {
