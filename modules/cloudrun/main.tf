@@ -11,15 +11,8 @@ terraform {
   }
 }
 
-resource "google_service_account" "service_account" {
-  account_id  = "cr-${var.name}"
-  description = "Service account for Cloud Run. Managed by Terraform"
-}
-
-resource "google_project_iam_member" "sa_role" {
-  project = var.project
-  role    = "roles/iam.serviceAccountUser"
-  member  = format("serviceAccount:%s", google_service_account.service_account.email)
+data "google_service_account" "service_account" {
+  account_id = "cr-microservices"
 }
 
 data "docker_registry_image" "image" {
@@ -55,7 +48,7 @@ resource "google_cloud_run_service" "cloudrun" {
       }
     }
     spec {
-      service_account_name = google_service_account.service_account.email
+      service_account_name = data.google_service_account.service_account.email
       dynamic "containers" {
         for_each = var.containers
         content {
