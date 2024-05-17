@@ -113,10 +113,6 @@ module "crayfits" {
   ])
   addl_env_vars = tolist([
     {
-      name  = "PORT"
-      value = "8888"
-    },
-    {
       name  = "SCYLLARIDAE_YML"
       value = <<EOT
 allowedMimeTypes:
