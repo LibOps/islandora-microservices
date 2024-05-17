@@ -1,13 +1,16 @@
-name: Terraform Plan
+name: Terraform Apply
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
+    types:
+      - closed
 env:
   TF_VAR_project: ${{ secrets.GCLOUD_PROJECT }}
 jobs:
   terraform:
+    if: github.event.pull_request.merged == true
     name: Run Terraform Plan
     runs-on: ubuntu-latest
     permissions:
@@ -23,10 +26,6 @@ jobs:
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.5.7
-
-    - name: lint
-      run: terraform fmt *.tf modules/*/*.tf
-      shell: bash
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
@@ -56,33 +55,6 @@ jobs:
     - name: Terraform Init
       run: terraform init -upgrade
 
-    - name: Terraform Plan
+    - name: Terraform Apply
       id: plan
-      run: |
-        out="$(terraform plan -no-color)"
-        out="${out//'%'/'%25'}"
-        out="${out//$'\n'/'%0A'}"
-        out="${out//$'\r'/'%0D'}"
-        echo "::set-output name=plan::$out"
-      continue-on-error: true
-
-    - uses: actions/github-script@v5
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-          <details><summary>Show Plan</summary>
-
-          \`\`\`terraform\n
-          ${{ steps.plan.outputs.plan }}
-          \n\`\`\`
-
-          </details>
-
-          *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          })
+      run: terraform apply -auto-approve
