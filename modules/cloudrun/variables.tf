@@ -11,16 +11,6 @@ variable "max_instances" {
   default = "5"
 }
 
-variable "memory" {
-  type    = string
-  default = "512Mi"
-}
-
-variable "cpu" {
-  type    = string
-  default = "1000m"
-}
-
 variable "regions" {
   type        = list(string)
   description = "The GCP region(s) to deploy to"
