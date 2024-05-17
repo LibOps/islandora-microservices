@@ -63,3 +63,90 @@ module "houdini" {
     docker = docker.local
   }
 }
+
+module "homarus" {
+  source = "./modules/cloudrun"
+
+  name = "homarus"
+  regions = [
+    "us-east4",
+    "us-east5",
+    "us-central1",
+    "us-west3",
+    "us-west1",
+    "us-west4",
+  ]
+
+  project = var.project
+  containers = tolist([
+    {
+      name           = "homarus",
+      image          = "us-docker.pkg.dev/${var.project}/shared/ffmpeg:main",
+      port           = 8080
+      liveness_probe = "/healthcheck"
+    }
+  ])
+  invokers = ["allUsers"]
+  providers = {
+    google = google.default
+    docker = docker.local
+  }
+}
+
+module "hypercube" {
+  source = "./modules/cloudrun"
+
+  name = "hypercube"
+  regions = [
+    "us-east4",
+    "us-east5",
+    "us-central1",
+    "us-west3",
+    "us-west1",
+    "us-west4",
+  ]
+
+  project = var.project
+  containers = tolist([
+    {
+      name           = "hypercube",
+      image          = "us-docker.pkg.dev/${var.project}/shared/tesseract:main",
+      port           = 8080
+      liveness_probe = "/healthcheck"
+    }
+  ])
+  invokers = ["allUsers"]
+  providers = {
+    google = google.default
+    docker = docker.local
+  }
+}
+
+module "crayfits" {
+  source = "./modules/cloudrun"
+
+  name = "crayfits"
+  regions = [
+    "us-east4",
+    "us-east5",
+    "us-central1",
+    "us-west3",
+    "us-west1",
+    "us-west4",
+  ]
+
+  project = var.project
+  containers = tolist([
+    {
+      name           = "crayfits",
+      image          = "us-docker.pkg.dev/${var.project}/shared/fits:main",
+      port           = 8080
+      liveness_probe = "/healthcheck"
+    }
+  ])
+  invokers = ["allUsers"]
+  providers = {
+    google = google.default
+    docker = docker.local
+  }
+}
