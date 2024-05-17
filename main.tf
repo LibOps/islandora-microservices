@@ -38,16 +38,7 @@ provider "docker" {
 module "houdini" {
   source = "./modules/cloudrun"
 
-  name = "houdini"
-  regions = [
-    "us-east4",
-    "us-east5",
-    "us-central1",
-    "us-west3",
-    "us-west1",
-    "us-west4",
-  ]
-
+  name    = "houdini"
   project = var.project
   containers = tolist([
     {
@@ -66,16 +57,7 @@ module "houdini" {
 module "homarus" {
   source = "./modules/cloudrun"
 
-  name = "homarus"
-  regions = [
-    "us-east4",
-    "us-east5",
-    "us-central1",
-    "us-west3",
-    "us-west1",
-    "us-west4",
-  ]
-
+  name    = "homarus"
   project = var.project
   containers = tolist([
     {
@@ -94,16 +76,7 @@ module "homarus" {
 module "hypercube" {
   source = "./modules/cloudrun"
 
-  name = "hypercube"
-  regions = [
-    "us-east4",
-    "us-east5",
-    "us-central1",
-    "us-west3",
-    "us-west1",
-    "us-west4",
-  ]
-
+  name    = "hypercube"
   project = var.project
   containers = tolist([
     {
@@ -122,16 +95,7 @@ module "hypercube" {
 module "crayfits" {
   source = "./modules/cloudrun"
 
-  name = "crayfits"
-  regions = [
-    "us-east4",
-    "us-east5",
-    "us-central1",
-    "us-west3",
-    "us-west1",
-    "us-west4",
-  ]
-
+  name    = "crayfits"
   project = var.project
   containers = tolist([
     {

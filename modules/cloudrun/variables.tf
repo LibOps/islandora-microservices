@@ -24,6 +24,14 @@ variable "cpu" {
 variable "regions" {
   type        = list(string)
   description = "The GCP region(s) to deploy to"
+  default = [
+    "us-east4",
+    "us-east5",
+    "us-central1",
+    "us-west3",
+    "us-west1",
+    "us-west4",
+  ]
 }
 
 variable "project" {
