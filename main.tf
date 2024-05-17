@@ -57,7 +57,6 @@ module "houdini" {
       liveness_probe = "/healthcheck"
     }
   ])
-  invokers = ["allUsers"]
   providers = {
     google = google.default
     docker = docker.local
@@ -86,7 +85,6 @@ module "homarus" {
       liveness_probe = "/healthcheck"
     }
   ])
-  invokers = ["allUsers"]
   providers = {
     google = google.default
     docker = docker.local
@@ -115,7 +113,6 @@ module "hypercube" {
       liveness_probe = "/healthcheck"
     }
   ])
-  invokers = ["allUsers"]
   providers = {
     google = google.default
     docker = docker.local
@@ -144,7 +141,6 @@ module "crayfits" {
       liveness_probe = "/healthcheck"
     }
   ])
-  invokers = ["allUsers"]
   providers = {
     google = google.default
     docker = docker.local
