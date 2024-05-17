@@ -92,6 +92,27 @@ module "hypercube" {
   }
 }
 
+module "fits" {
+  source = "./modules/cloudrun"
+
+  name    = "fits"
+  project = var.project
+  containers = tolist([
+    {
+      name   = "fits",
+      image  = "us-docker.pkg.dev/${var.project}/shared/harvard-fits:main",
+      memory = "2Gi"
+      cpu    = "2000m"
+    }
+  ])
+
+  providers = {
+    google = google.default
+    docker = docker.local
+  }
+}
+
+
 module "crayfits" {
   source = "./modules/cloudrun"
 
@@ -101,14 +122,7 @@ module "crayfits" {
     {
       name           = "crayfits",
       image          = "us-docker.pkg.dev/${var.project}/shared/fits:main",
-      port           = 8888
       liveness_probe = "/healthcheck"
-    },
-    {
-      name   = "harvard-fits",
-      image  = "us-docker.pkg.dev/${var.project}/shared/harvard-fits:main",
-      memory = "2Gi"
-      cpu    = "2000m"
     }
   ])
   addl_env_vars = tolist([
@@ -125,7 +139,7 @@ cmdByMimeType:
       - "POST"
       - "-F"
       - "datafile=@-"
-      - "http://localhost:8080/fits/examine"
+      - "https://fits-us-west1-byfdfb32sq-uw.a.run.app/fits/examine"
 EOT
     }
   ])
