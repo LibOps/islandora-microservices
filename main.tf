@@ -148,3 +148,15 @@ EOT
     docker = docker.local
   }
 }
+
+module "lb" {
+  source = "./modules/lb"
+
+  project = var.project
+  backends = {
+    "homarus"   = module.homarus.backend,
+    "houdini"   = module.houdini.backend,
+    "hypercube" = module.hypercube.backend,
+    "crayfits"  = module.crayfits.backend
+  }
+}
