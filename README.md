@@ -33,3 +33,5 @@ To use these services, in your ISLE `docker-compose.yml` you can point to the Cl
 ```
 
 Your files must be accessible over the WWW in order to use this.
+
+You could then remove the crayfish, fits, houdini, hypercube, and homarus services from your ISLE deployment. This should allow you to grant those saved compute resources to other ISLE services. One great use of the resource savings would be increasing the number of php-fpm workers on your Islandora Drupal site to take full advantage of the auto scaled derivative generation.
