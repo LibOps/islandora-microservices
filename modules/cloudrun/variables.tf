@@ -8,7 +8,7 @@ variable "min_instances" {
 }
 variable "max_instances" {
   type    = string
-  default = "5"
+  default = "100"
 }
 
 variable "regions" {
