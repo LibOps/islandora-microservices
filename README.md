@@ -1,6 +1,6 @@
 # Horizontally autoscaled derivative creation
 
-Your Islandora instance can leverage [the Crayfish microservices](https://github.com/islandora/crayfish) running in the Cloud. Thumbnails, video derivatives, OCR, hOCR, FITS metadata generated on media uploaded to your repository. Autoscaled to meet the needs of your repository during times of heavy ingestion.
+Your Islandora instance can leverage the suite of Islandora microservices running in the Cloud. Image derivatives, video derivatives, OCR, hOCR, FITS metadata generated on media uploaded to your repository. Autoscaled to meet the needs of your repository during times of heavy ingestion.
 
 ## How it works
 
