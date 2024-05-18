@@ -73,7 +73,7 @@ resource "google_compute_url_map" "default" {
     dynamic "path_rule" {
       for_each = var.backends
       content {
-        paths   = ["/${path_rule.key}"]
+        paths   = ["/${path_rule.key}", "/${path_rule.key}/*"]
         service = path_rule.value
       }
     }

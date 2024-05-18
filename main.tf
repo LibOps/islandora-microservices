@@ -139,7 +139,7 @@ cmdByMimeType:
       - "POST"
       - "-F"
       - "datafile=@-"
-      - "https://fits-us-west1-byfdfb32sq-uw.a.run.app/fits/examine"
+      - "https://microservices.libops.site/fits/fits/examine"
 EOT
     }
   ])
@@ -157,6 +157,7 @@ module "lb" {
     "homarus"   = module.homarus.backend,
     "houdini"   = module.houdini.backend,
     "hypercube" = module.hypercube.backend,
+    "fits"      = module.fits.backend
     "crayfits"  = module.crayfits.backend
   }
 }
