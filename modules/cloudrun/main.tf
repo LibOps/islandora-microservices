@@ -114,3 +114,38 @@ resource "google_cloud_run_service_iam_member" "invoker" {
   role     = "roles/run.invoker"
   member   = "allUsers"
 }
+
+# create a serverless NEG for this set of regional services
+resource "google_compute_region_network_endpoint_group" "neg" {
+  count = length(var.regions)
+
+  name                  = "libops-neg-${google_cloud_run_service.cloudrun[count.index].name}"
+  network_endpoint_type = "SERVERLESS"
+  region                = google_cloud_run_service.cloudrun[count.index].location
+  project               = var.project
+
+  cloud_run {
+    service = google_cloud_run_service.cloudrun[count.index].name
+  }
+}
+
+resource "google_compute_backend_service" "backend" {
+  project = var.project
+  name    = "libops-backend-${var.name}"
+
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+  protocol              = "HTTPS"
+
+  dynamic "backend" {
+    for_each = google_compute_region_network_endpoint_group.neg
+
+    content {
+      group = backend.value.id
+    }
+  }
+
+  log_config {
+    enable      = true
+    sample_rate = 1.0
+  }
+}
