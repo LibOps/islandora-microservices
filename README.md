@@ -1,8 +1,10 @@
 # islandora-microservices
 
+Your Islandora instance can leverage [the Crayfish microservices](https://github.com/islandora/crayfish) running in the Cloud. 
+
 ## How it works
 
-Your Islandora instance can leverage [the Crayfish microservices](https://github.com/islandora/crayfish) running in the Cloud. The microservices are running in multiple regions, and your microservice requests will route to the region closest to your Islandora server.
+The microservices are running in multiple regions, and your microservice requests will route to the region closest to your Islandora server.
 
 ```mermaid
 flowchart TD
