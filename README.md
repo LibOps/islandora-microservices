@@ -1,6 +1,6 @@
 # Horizontally autoscaled derivative creation
 
-Your Islandora instance can leverage [the Crayfish microservices](https://github.com/islandora/crayfish) running in the Cloud. Thumbnails, OCR, hOCR, FITS metadata generated on media uploaded to your repository. Autoscaled to meet the needs of your repository during times of heavy ingestion.
+Your Islandora instance can leverage [the Crayfish microservices](https://github.com/islandora/crayfish) running in the Cloud. Thumbnails, video derivatives, OCR, hOCR, FITS metadata generated on media uploaded to your repository. Autoscaled to meet the needs of your repository during times of heavy ingestion.
 
 ## How it works
 
@@ -34,4 +34,4 @@ To use these services, in your ISLE `docker-compose.yml` you can point to the Cl
 
 Your files must be accessible over the WWW in order to use this.
 
-You could then remove the crayfish, fits, houdini, hypercube, and homarus services from your ISLE deployment. This should allow you to grant those saved compute resources to other ISLE services. One great use of the resource savings would be increasing the number of php-fpm workers on your Islandora Drupal site to take full advantage of the auto scaled derivative generation.
+You could then remove the crayfits, fits, houdini, hypercube, and homarus services from your ISLE deployment. This should allow you to grant those saved compute resources to other ISLE services. One great way to reallocate some of those resources would be increasing the number of php-fpm workers on your Islandora Drupal site in order to take full advantage of the auto scaled derivative generation.
