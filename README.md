@@ -9,13 +9,13 @@ The microservices are running in multiple regions, and your microservice request
 ```mermaid
 flowchart TD
     A[Alice] -->|Uploads TIFF image| B(Islandora Server\nin Indiana)
-    B -- GET fa:fa-image derivative --> C{fa:fa-network-wired}
-    C -.-|Nevada| G[imagefa:fa-magic-wand-sparkles]
-    C -.-|Oregon| D[imagefa:fa-magic-wand-sparkles]
-    C -.-|Iowa| E[imagefa:fa-magic-wand-sparkles]
-    C -->|Ohio| F[imagefa:fa-magic-wand-sparkles]
-    C -.-|Virginia| H[imagefa:fa-magic-wand-sparkles]
-    F[imagefa:fa-magic-wand-sparkles]-- fa:fa-image derivative -->B
+    B -- GET fa:fa-image derivative --> C{Load Balancerfa:fa-network-wired}
+    C -.-|Nevada| G[imagemagick fa:fa-magic-wand-sparkles]
+    C -.-|Oregon| D[imagemagick fa:fa-magic-wand-sparkles]
+    C -.-|Iowa| E[imagemagick fa:fa-magic-wand-sparkles]
+    C -->|Ohio| F[imagemagick fa:fa-magic-wand-sparkles]
+    C -.-|Virginia| H[imagemagick fa:fa-magic-wand-sparkles]
+    F[imagemagick fa:fa-magic-wand-sparkles]-- fa:fa-image derivative -->B
 ```
 
 ## Install
