@@ -139,7 +139,7 @@ cmdByMimeType:
       - "POST"
       - "-F"
       - "datafile=@-"
-      - "https://microservices.libops.site/fits/fits/examine"
+      - "https://microservices.libops.site/fits/examine"
 EOT
     }
   ])
