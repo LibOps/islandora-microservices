@@ -1,5 +1,18 @@
 # islandora-microservices
 
+
+```mermaid
+flowchart TD
+    A[Alice] -->|Uploads TIFF image| B(Islandora Server\nin Indiana)
+    B -- GET fa:fa-image derivative --> C{fa:fa-network-wired}
+    C -.-|Nevada| G[imagefa:fa-magic-wand-sparkles]
+    C -.-|Oregon| D[imagefa:fa-magic-wand-sparkles]
+    C -.-|Iowa| E[imagefa:fa-magic-wand-sparkles]
+    C -->|Ohio| F[imagefa:fa-magic-wand-sparkles]
+    C -.-|Virginia| H[imagefa:fa-magic-wand-sparkles]
+    F[imagefa:fa-magic-wand-sparkles]-- fa:fa-image derivative -->B
+```
+
 To use these services, in your ISLE `docker-compose.yml` you can point to the Cloud Run deployments to perform your derivative generation
 
 ```
