@@ -48,7 +48,9 @@ resource "google_cloud_run_service" "cloudrun" {
       }
     }
     spec {
-      service_account_name = data.google_service_account.service_account.email
+      service_account_name  = data.google_service_account.service_account.email
+      container_concurrency = 1
+
       dynamic "containers" {
         for_each = var.containers
         content {
