@@ -1,10 +1,10 @@
 # Multi-region, horizontally autoscaled Islandora microservices
 
-Your Islandora instance can use Islandora microservices running in the Cloud. Image derivatives, video derivatives, OCR, hOCR, FITS metadata generated on media uploaded to your repository. Autoscaled to meet the needs of your repository during times of heavy ingestion.
+Your Islandora instance can use the Islandora microservices that are fully managed by this repository. Image derivatives, video derivatives, OCR, hOCR, FITS metadata all can be generated on media uploaded to your repository by this service. All the services are set to autoscale to meet the needs of your repository during times of heavy ingestion or migrations.
 
 ## How it works
 
-The microservices are running in multiple regions, and your microservice requests will route to the region closest to your Islandora server.
+The microservices are running in multiple regions, and your microservice requests will route to the region closest to your Islandora server (though if your nearest region is experiencing an outage, your request will route to an available region).
 
 ```mermaid
 flowchart TD
@@ -20,7 +20,7 @@ flowchart TD
 
 ## Install
 
-To use these services, in your ISLE `docker-compose.yml` you can point to the respective service to have your derivative generation done by this service.
+To use these managed service, in your ISLE `docker-compose.yml` you can point to the respective service to have it perform your derivative generation.
 
 ```
     alpaca-prod: &alpaca-prod
@@ -32,7 +32,7 @@ To use these services, in your ISLE `docker-compose.yml` you can point to the re
             ALPACA_DERIVATIVE_OCR_URL: https://microservices.libops.site/hypercube
 ```
 
-Your files must have a route over the WWW in order to use this service. For private files, Islandora handles sending the proper authentication token to allow this service to process your files.
+Your files must have a network route over the WWW in order to use this service (or at least from Google Cloud to your Islandora Server). For private files, Islandora handles sending the proper authentication token to allow this service to process your files.
 
 ### Post Install
 
