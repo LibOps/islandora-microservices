@@ -21,6 +21,11 @@ variable "regions" {
     "us-west3",
     "us-west1",
     "us-west4",
+    "us-south1",
+    "northamerica-northeast1",
+    "northamerica-northeast2",
+    "australia-southeast1",
+    "australia-southeast2"
   ]
 }
 
