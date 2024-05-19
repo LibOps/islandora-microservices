@@ -1,6 +1,6 @@
-# Horizontally autoscaled derivative creation
+# Multi-region, horizontally autoscaled Islandora microservices
 
-Your Islandora instance can leverage the suite of Islandora microservices running in the Cloud. Image derivatives, video derivatives, OCR, hOCR, FITS metadata generated on media uploaded to your repository. Autoscaled to meet the needs of your repository during times of heavy ingestion.
+Your Islandora instance can use Islandora microservices running in the Cloud. Image derivatives, video derivatives, OCR, hOCR, FITS metadata generated on media uploaded to your repository. Autoscaled to meet the needs of your repository during times of heavy ingestion.
 
 ## How it works
 
@@ -20,18 +20,20 @@ flowchart TD
 
 ## Install
 
-To use these services, in your ISLE `docker-compose.yml` you can point to the Cloud Run deployments to perform your derivative generation.
+To use these services, in your ISLE `docker-compose.yml` you can point to the respective service to have your derivative generation done by this service.
 
 ```
     alpaca-prod: &alpaca-prod
         <<: [*prod, *alpaca]
         environment:
-            ALPACA_DERIVATIVE_FITS_URL: https://microservice.libops.site/crayfits
-            ALPACA_DERIVATIVE_HOMARUS_URL: https://microservice.libops.site/homarus
-            ALPACA_DERIVATIVE_HOUDINI_URL: https://microservice.libops.site/houdini
-            ALPACA_DERIVATIVE_OCR_URL: https://microservice.libops.site/hypercube
+            ALPACA_DERIVATIVE_FITS_URL: https://microservices.libops.site/crayfits
+            ALPACA_DERIVATIVE_HOMARUS_URL: https://microservices.libops.site/homarus
+            ALPACA_DERIVATIVE_HOUDINI_URL: https://microservices.libops.site/houdini
+            ALPACA_DERIVATIVE_OCR_URL: https://microservices.libops.site/hypercube
 ```
 
-Your files must be accessible over the WWW in order to use this.
+Your files must have a route over the WWW in order to use this service. For private files, Islandora handles sending the proper authentication token to allow this service to process your files.
 
-You could then remove the crayfits, fits, houdini, hypercube, and homarus services from your ISLE deployment. This should allow you to grant those saved compute resources to other ISLE services. One great way to reallocate some of those resources would be increasing the number of php-fpm workers on your Islandora Drupal site in order to take full advantage of the auto scaled derivative generation.
+### Post Install
+
+You could then remove the crayfits, fits, houdini, hypercube, and homarus services from your production ISLE deployment. This should allow you to grant those saved compute resources to other ISLE services. One great way to reallocate some of those resources would be increasing the number of php-fpm workers on your Islandora Drupal site in order to take full advantage of the auto scaled derivative generation.
