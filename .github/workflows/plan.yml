@@ -58,24 +58,32 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan > plan.log
+      run: |
+        out="$(terraform plan -no-color)"
+        out="${out//'%'/'%25'}"
+        out="${out//$'\n'/'%0A'}"
+        out="${out//$'\r'/'%0D'}"
+        echo "::set-output name=plan::$out"
       continue-on-error: true
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
+    - name: Post comment with Terraform plan
+      uses: actions/github-script@v5
       with:
-        name: terraform-plan
-        path: plan.log
-
-    - name: Post comment with artifact link
-      uses: actions/github-script@v6
-      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-          const commentBody = `:rocket: Terraform plan has been created! [Download Artifact](${artifactUrl})`;
+          const output = `#### Terraform Plan 📖
+          \`${{ steps.plan.outcome }}\`
+          <details><summary>Show Plan</summary>
+
+          \`\`\`terraform
+          ${{ steps.plan.outputs.plan }}
+          \`\`\`
+
+          </details>`;
+
           github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: commentBody
+            body: output
           });
