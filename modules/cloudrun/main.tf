@@ -21,15 +21,16 @@ data "docker_registry_image" "image" {
 }
 
 resource "google_cloud_run_service" "cloudrun" {
-  count    = length(var.regions)
-  name     = format("%s-%s", var.name, var.regions[count.index])
-  location = var.regions[count.index]
+  for_each = toset(var.regions)
+  name     = var.name
+  location = each.value
 
   lifecycle {
     ignore_changes = [
       metadata[0].annotations["run.googleapis.com/launch-stage"],
       metadata[0].effective_annotations["run.googleapis.com/launch-stage"]
     ]
+    create_before_destroy = true
   }
 
   metadata {
@@ -110,24 +111,27 @@ resource "google_cloud_run_service" "cloudrun" {
 }
 
 resource "google_cloud_run_service_iam_member" "invoker" {
-  count    = length(var.regions)
-  location = google_cloud_run_service.cloudrun[count.index].location
-  service  = google_cloud_run_service.cloudrun[count.index].name
+  for_each = toset(var.regions)
+  location = each.value
+  service  = google_cloud_run_service.cloudrun[each.value].name
   role     = "roles/run.invoker"
   member   = "allUsers"
 }
 
 # create a serverless NEG for this set of regional services
 resource "google_compute_region_network_endpoint_group" "neg" {
-  count = length(var.regions)
-
-  name                  = "libops-neg-${google_cloud_run_service.cloudrun[count.index].name}"
+  for_each              = toset(var.regions)
+  name                  = "libops-neg-${var.name}-${each.value}"
   network_endpoint_type = "SERVERLESS"
-  region                = google_cloud_run_service.cloudrun[count.index].location
+  region                = each.value
   project               = var.project
 
   cloud_run {
-    service = google_cloud_run_service.cloudrun[count.index].name
+    service = google_cloud_run_service.cloudrun[each.value].name
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
