@@ -161,3 +161,35 @@ module "lb" {
     "crayfits"  = module.crayfits.backend
   }
 }
+
+resource "google_monitoring_uptime_check_config" "availability" {
+  for_each = toset([
+    "crayfits",
+    "homarus",
+    "houdini",
+    "hypercube"
+  ])
+  display_name = "${each.value}-availability"
+  timeout = "10s"
+  period = "300s"
+  project = var.project
+  selected_regions = [
+    "USA_OREGON",
+    "USA_VIRGINIA",
+    "USA_IOWA"
+  ]
+  http_check {
+    path = "/${each.value}/healthcheck"
+    port = "443"
+    use_ssl = true
+    validate_ssl = true
+  }
+
+  monitored_resource {
+    type = "uptime_url"
+    labels = {
+      project_id = var.project
+      host = "microservices.libops.site"
+    }
+  }
+}
