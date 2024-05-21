@@ -34,6 +34,11 @@ variable "project" {
   description = "The GCP project to use"
 }
 
+variable "skipNeg" {
+  type    = bool
+  default = false
+}
+
 variable "secrets" {
   type = list(object({
     name        = string
@@ -42,6 +47,7 @@ variable "secrets" {
   }))
   default = []
 }
+
 variable "containers" {
   type = list(object({
     image          = string

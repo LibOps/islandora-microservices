@@ -1,14 +1,14 @@
-name: Terraform Plan
+name: Integration Test
 
 on:
-  pull_request:
-    branches:
+  push:
+    branches-ignore:
       - main
 env:
   TF_VAR_project: ${{ secrets.GCLOUD_PROJECT }}
 jobs:
   terraform:
-    name: Run Terraform Plan
+    name: Create test CR
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -25,7 +25,7 @@ jobs:
         terraform_version: 1.5.7
 
     - name: lint
-      run: find . -type f -name "*.tf" -exec terraform fmt {} \;
+      run: terraform fmt *.tf modules/*/*.tf
       shell: bash
 
     - name: Set up Cloud SDK
@@ -53,37 +53,22 @@ jobs:
         username: 'oauth2accesstoken'
         password: '${{ steps.auth.outputs.access_token }}'
 
-    - name: Terraform Init
+    - name: terraform init
       run: terraform init -upgrade
+      working-directory: ./test
 
-    - name: Terraform Plan
-      id: plan
-      run: |
-        out="$(terraform plan -no-color)"
-        out="${out//'%'/'%25'}"
-        out="${out//$'\n'/'%0A'}"
-        out="${out//$'\r'/'%0D'}"
-        echo "::set-output name=plan::$out"
-      continue-on-error: true
+    - name : pick a region, any region
+      run: terraform apply -target random_shuffle.region -auto-approve
+      working-directory: ./test
 
-    - name: Post comment with Terraform plan
-      uses: actions/github-script@v5
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const output = `#### Terraform Plan 📖
-          \`${{ steps.plan.outcome }}\`
-          <details><summary>Show Plan</summary>
+    - name: terraform apply
+      run: terraform apply -auto-approve
+      working-directory: ./test
 
-          \`\`\`terraform
-          ${{ steps.plan.outputs.plan }}
-          \`\`\`
+    - name: run tests
+      run: ./test.sh
+      working-directory: ./test
 
-          </details>`;
-
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: output
-          });
+    - name: terraform destroy
+      run: terraform destroy -auto-approve
+      working-directory: ./test

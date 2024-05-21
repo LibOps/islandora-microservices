@@ -1,3 +1,10 @@
 output "backend" {
-  value = google_compute_backend_service.backend.id
+  value = var.skipNeg ? "" : google_compute_backend_service.backend[0].id
+}
+
+output "urls" {
+  value = {
+    for region, service in google_cloud_run_service.cloudrun :
+    region => service.status[0].url
+  }
 }
