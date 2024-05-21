@@ -2,6 +2,8 @@
 
 set -eou pipefail
 
+pwd
+
 JSON=$(terraform output -json)
 
 KEYS=$(echo "$JSON" | jq -r '.urls.value | keys[]')
