@@ -2,6 +2,14 @@
 
 set -eou pipefail
 
+hash() {
+  if command -v md5sum >/dev/null 2>&1; then
+    md5sum "$@"
+  else
+    md5 "$@"
+  fi
+}
+
 terraform output -json | jq .urls.value > output.json
 KEYS=$(jq -r 'keys[]' output.json)
 for KEY in $KEYS; do
@@ -22,7 +30,7 @@ for KEY in $KEYS; do
         --header "Accept: image/jpeg" \
         --header "Apix-Ldp-Resource: http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" \
         "$URL"
-    md5 image.jpg | grep fe7dd57460dbaf50faa38affde54b694
+    hash image.jpg | grep fe7dd57460dbaf50faa38affde54b694
     rm image.jpg
   elif [ "$KEY" == "houdini" ]; then
     curl -s -o image.png \
