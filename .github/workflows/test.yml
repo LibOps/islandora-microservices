@@ -1,18 +1,14 @@
-name: Terraform Apply
+name: Integration Test
 
 on:
-  pull_request_target:
-    branches:
+  push:
+    branches-ignore:
       - main
-    types:
-      - closed
 env:
   TF_VAR_project: ${{ secrets.GCLOUD_PROJECT }}
 jobs:
   terraform:
-    if: github.event.pull_request.merged == true
-
-    name: Run Terraform Apply
+    name: Create test CR
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -27,6 +23,10 @@ jobs:
       uses: hashicorp/setup-terraform@v3
       with:
         terraform_version: 1.5.7
+
+    - name: lint
+      run: terraform fmt *.tf modules/*/*.tf
+      shell: bash
 
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
@@ -53,9 +53,22 @@ jobs:
         username: 'oauth2accesstoken'
         password: '${{ steps.auth.outputs.access_token }}'
 
-    - name: Terraform Init
+    - name: terraform init
       run: terraform init -upgrade
+      working-directory: ./test
 
-    - name: Terraform Apply
-      id: plan
+    - name : pick a region, any region
+      run: terraform apply -target random_shuffle.region -auto-approve
+      working-directory: ./test
+
+    - name: terraform apply
       run: terraform apply -auto-approve
+      working-directory: ./test
+
+    - name: run tests
+      run: ./test.sh
+      working-directory: ./test
+
+    - name: terraform destroy
+      run: terraform destroy -auto-approve
+      working-directory: ./test

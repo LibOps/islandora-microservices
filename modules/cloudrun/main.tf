@@ -120,7 +120,7 @@ resource "google_cloud_run_service_iam_member" "invoker" {
 
 # create a serverless NEG for this set of regional services
 resource "google_compute_region_network_endpoint_group" "neg" {
-  for_each              = toset(var.regions)
+  for_each              = var.skipNeg ? toset([]) : toset(var.regions)
   name                  = "libops-neg-${var.name}-${each.value}"
   network_endpoint_type = "SERVERLESS"
   region                = each.value
@@ -136,6 +136,8 @@ resource "google_compute_region_network_endpoint_group" "neg" {
 }
 
 resource "google_compute_backend_service" "backend" {
+  count = var.skipNeg ? 0 : 1
+
   project = var.project
   name    = "libops-backend-${var.name}"
 
