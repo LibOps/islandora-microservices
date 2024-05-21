@@ -77,6 +77,18 @@ resource "google_compute_url_map" "default" {
         service = path_rule.value
       }
     }
+    dynamic "path_rule" {
+      for_each = var.backends
+      content {
+        paths   = ["/${path_rule.key}/healthcheck"]
+        service = path_rule.value
+        route_action {
+          url_rewrite {
+            path_prefix_rewrite = "/healthcheck"
+          }
+        }
+      }
+    }
   }
 }
 
