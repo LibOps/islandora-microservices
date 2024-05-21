@@ -171,7 +171,7 @@ resource "google_monitoring_uptime_check_config" "availability" {
   ])
   display_name = "${each.value}-availability"
   timeout = "10s"
-  period = "300s"
+  period = "3m"
   project = var.project
   selected_regions = [
     "USA_OREGON",
