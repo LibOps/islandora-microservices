@@ -2,13 +2,12 @@
 
 set -eou pipefail
 
-JSON=$(terraform output -json)
-echo "$JSON"
-echo "$JSON" | jq .
-KEYS=$(echo "$JSON" | jq -r '.urls.value | keys[]')
-echo $KEYS
+terraform output -json > output.json
+cat output.json
+KEYS=$(jq -r '.urls.value | keys[]' output.json)
+echo "$KEYS"
 for KEY in $KEYS; do
-  URL=$(echo "$JSON" | jq -r ".urls.value[\"$KEY\"]")
+  URL=$(jq -r ".urls.value[\"$KEY\"]" output.json)
   echo "Testing $KEY at $URL"
 
   if [ "$KEY" == "crayfits" ]; then
@@ -46,3 +45,4 @@ for KEY in $KEYS; do
     exit 1
   fi
 done
+rm output.json
