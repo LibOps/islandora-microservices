@@ -2,12 +2,11 @@
 
 set -eou pipefail
 
-pwd
-
 JSON=$(terraform output -json)
-
+echo "$JSON"
+echo "$JSON" | jq .
 KEYS=$(echo "$JSON" | jq -r '.urls.value | keys[]')
-
+echo $KEYS
 for KEY in $KEYS; do
   URL=$(echo "$JSON" | jq -r ".urls.value[\"$KEY\"]")
   echo "Testing $KEY at $URL"
