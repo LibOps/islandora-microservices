@@ -37,3 +37,7 @@ Your files must have a network route over the WWW in order to use this service (
 ### Post Install
 
 You could then remove the crayfits, fits, houdini, hypercube, and homarus services from your production ISLE deployment. This should allow you to grant those saved compute resources to other ISLE services. One great way to reallocate some of those resources would be increasing the number of php-fpm workers on your Islandora Drupal site in order to take full advantage of the auto scaled derivative generation.
+
+# Availability
+
+A VALE dashboard for this service is available at https://www.libops.io/microservices
