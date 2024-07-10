@@ -11,7 +11,7 @@ terraform {
   }
 }
 
-locals
+locals {
   direct_vpc  = <<EOT
         [
           {
