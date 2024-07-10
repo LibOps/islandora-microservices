@@ -11,6 +11,20 @@ terraform {
   }
 }
 
+locals
+  direct_vpc  = <<EOT
+        [
+          {
+            "network": "default",
+            "subnetwork" : "default",
+            "tags": [
+              "lnmp"
+            ]
+          }
+        ]
+EOT
+}
+
 data "google_service_account" "service_account" {
   account_id = "cr-microservices"
 }
@@ -46,6 +60,8 @@ resource "google_cloud_run_service" "cloudrun" {
         "autoscaling.knative.dev/minScale" : var.min_instances,
         "autoscaling.knative.dev/maxScale" : var.max_instances,
         "run.googleapis.com/cpu-throttling" : true,
+        "run.googleapis.com/network-interfaces" : local.direct_vpc,
+        "run.googleapis.com/vpc-access-egress" : "all-traffic",
       }
     }
     spec {
