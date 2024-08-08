@@ -11,8 +11,7 @@ env:
   TF_VAR_project: ${{ secrets.GCLOUD_PROJECT }}
 jobs:
   terraform:
-    if: github.event.pull_request.merged == true
-
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true }}
     name: Run Terraform Apply
     runs-on: ubuntu-latest
     permissions:
