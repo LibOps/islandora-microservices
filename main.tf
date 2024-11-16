@@ -35,6 +35,69 @@ provider "docker" {
   }
 }
 
+module "ocrpdf" {
+  source = "./modules/cloudrun"
+
+  name    = "ocrpdf"
+  project = var.project
+  containers = tolist([
+    {
+      name           = "ocrpdf",
+      image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-ocrpdf:main",
+      port           = 8080
+      liveness_probe = "/healthcheck"
+      memory         = "2Gi"
+      cpu            = "2000m"
+    }
+  ])
+  providers = {
+    google = google.default
+    docker = docker.local
+  }
+}
+
+module "pandoc" {
+  source = "./modules/cloudrun"
+
+  name    = "pandoc"
+  project = var.project
+  containers = tolist([
+    {
+      name           = "pandoc",
+      image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-pandoc:main",
+      port           = 8080
+      liveness_probe = "/healthcheck"
+      memory         = "4Gi"
+      cpu            = "4000m"
+    }
+  ])
+  providers = {
+    google = google.default
+    docker = docker.local
+  }
+}
+
+module "whisper" {
+  source = "./modules/cloudrun"
+
+  name    = "whisper"
+  project = var.project
+  containers = tolist([
+    {
+      name           = "whisper",
+      image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-whisper:main",
+      port           = 8080
+      liveness_probe = "/healthcheck"
+      memory         = "4Gi"
+      cpu            = "4000m"
+    }
+  ])
+  providers = {
+    google = google.default
+    docker = docker.local
+  }
+}
+
 module "houdini" {
   source = "./modules/cloudrun"
 
@@ -43,7 +106,7 @@ module "houdini" {
   containers = tolist([
     {
       name           = "houdini",
-      image          = "us-docker.pkg.dev/${var.project}/shared/imagemagick:main",
+      image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-imagemagick:main",
       port           = 8080
       liveness_probe = "/healthcheck"
     }
@@ -62,7 +125,7 @@ module "homarus" {
   containers = tolist([
     {
       name           = "homarus",
-      image          = "us-docker.pkg.dev/${var.project}/shared/ffmpeg:main",
+      image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-ffmpeg:main",
       port           = 8080
       liveness_probe = "/healthcheck"
     }
@@ -81,7 +144,7 @@ module "hypercube" {
   containers = tolist([
     {
       name           = "hypercube",
-      image          = "us-docker.pkg.dev/${var.project}/shared/tesseract:main",
+      image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-tesseract:main",
       port           = 8080
       liveness_probe = "/healthcheck"
     }
@@ -112,7 +175,6 @@ module "fits" {
   }
 }
 
-
 module "crayfits" {
   source = "./modules/cloudrun"
 
@@ -121,7 +183,7 @@ module "crayfits" {
   containers = tolist([
     {
       name           = "crayfits",
-      image          = "us-docker.pkg.dev/${var.project}/shared/fits:main",
+      image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-fits:main",
       liveness_probe = "/healthcheck"
     }
   ])
@@ -159,6 +221,9 @@ module "lb" {
     "hypercube" = module.hypercube.backend,
     "fits"      = module.fits.backend
     "crayfits"  = module.crayfits.backend
+    "whisper"   = module.whisper.backend
+    "pandoc"    = module.pandoc.backend
+    "ocrpdf"    = module.ocrpdf.backend
   }
 }
 
@@ -170,18 +235,18 @@ resource "google_monitoring_uptime_check_config" "availability" {
     "hypercube"
   ])
   display_name = "${each.value}-availability"
-  timeout = "10s"
-  period = "60s"
-  project = var.project
+  timeout      = "10s"
+  period       = "60s"
+  project      = var.project
   selected_regions = [
     "USA_OREGON",
     "USA_VIRGINIA",
     "USA_IOWA"
   ]
   http_check {
-    path = "/${each.value}/healthcheck"
-    port = "443"
-    use_ssl = true
+    path         = "/${each.value}/healthcheck"
+    port         = "443"
+    use_ssl      = true
     validate_ssl = true
   }
 
@@ -189,7 +254,7 @@ resource "google_monitoring_uptime_check_config" "availability" {
     type = "uptime_url"
     labels = {
       project_id = var.project
-      host = "microservices.libops.site"
+      host       = "microservices.libops.site"
     }
   }
 }
