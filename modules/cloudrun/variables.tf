@@ -56,6 +56,7 @@ variable "containers" {
     memory         = optional(string, "512Mi")
     cpu            = optional(string, "1000m")
     liveness_probe = optional(string, "")
+    gpus           = optional(string, "")
   }))
 }
 

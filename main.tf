@@ -11,7 +11,7 @@ terraform {
     }
     google = {
       source  = "hashicorp/google"
-      version = "5.29.1"
+      version = "6.11.2"
     }
   }
 
@@ -88,10 +88,11 @@ module "whisper" {
       image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-whisper:main",
       port           = 8080
       liveness_probe = "/healthcheck"
-      memory         = "4Gi"
-      cpu            = "4000m"
+      memory         = "16Gi"
+      gpus           = 1
     }
   ])
+  regions = ["us-central1"]
   providers = {
     google = google.default
     docker = docker.local
