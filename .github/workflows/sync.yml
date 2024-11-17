@@ -48,3 +48,5 @@ jobs:
 
       - name: ⛴️
         run: gh workflow run apply.yml
+        env:
+          GH_TOKEN: ${{ github.token }}
