@@ -6,7 +6,7 @@ terraform {
     }
     google = {
       source  = "hashicorp/google"
-      version = "= 5.29.1"
+      version = "= 6.11.2"
     }
   }
 }
@@ -45,7 +45,7 @@ resource "google_cloud_run_service" "cloudrun" {
         "run.googleapis.com/execution-environment" : "gen2",
         "autoscaling.knative.dev/minScale" : var.min_instances,
         "autoscaling.knative.dev/maxScale" : var.max_instances,
-        "run.googleapis.com/cpu-throttling" : true,
+        "run.googleapis.com/cpu-throttling" : var.containers[0].gpus == "",
       }
     }
     spec {
@@ -99,10 +99,15 @@ resource "google_cloud_run_service" "cloudrun" {
           }
 
           resources {
-            limits = {
-              cpu    = containers.value.cpu
-              memory = containers.value.memory
-            }
+            limits = merge(
+              {
+                memory = containers.value.memory
+              },
+              containers.value.gpus != "" ? {
+                "nvidia.com/gpu" = containers.value.gpus
+                } : { cpu        = containers.value.cpu
+              }
+            )
           }
         }
       }
