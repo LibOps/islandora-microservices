@@ -82,6 +82,7 @@ module "whisper" {
 
   name    = "whisper"
   project = var.project
+  max_instances = 3
   containers = tolist([
     {
       name           = "whisper",
@@ -233,7 +234,9 @@ resource "google_monitoring_uptime_check_config" "availability" {
     "crayfits",
     "homarus",
     "houdini",
-    "hypercube"
+    "hypercube",
+    "ocrpdf",
+    "pandoc"
   ])
   display_name = "${each.value}-availability"
   timeout      = "10s"
