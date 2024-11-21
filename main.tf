@@ -80,8 +80,8 @@ module "pandoc" {
 module "whisper" {
   source = "./modules/cloudrun"
 
-  name    = "whisper"
-  project = var.project
+  name          = "whisper"
+  project       = var.project
   max_instances = 3
   containers = tolist([
     {
@@ -109,6 +109,26 @@ module "houdini" {
     {
       name           = "houdini",
       image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-imagemagick:main",
+      port           = 8080
+      liveness_probe = "/healthcheck"
+    }
+  ])
+  providers = {
+    google = google.default
+    docker = docker.local
+  }
+}
+
+
+module "libreoffice" {
+  source = "./modules/cloudrun"
+
+  name    = "libreoffice"
+  project = var.project
+  containers = tolist([
+    {
+      name           = "libreoffice",
+      image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-libreoffice:main",
       port           = 8080
       liveness_probe = "/healthcheck"
     }
@@ -218,14 +238,15 @@ module "lb" {
 
   project = var.project
   backends = {
-    "homarus"   = module.homarus.backend,
-    "houdini"   = module.houdini.backend,
-    "hypercube" = module.hypercube.backend,
-    "fits"      = module.fits.backend
-    "crayfits"  = module.crayfits.backend
-    "whisper"   = module.whisper.backend
-    "pandoc"    = module.pandoc.backend
-    "ocrpdf"    = module.ocrpdf.backend
+    "homarus"     = module.homarus.backend,
+    "houdini"     = module.houdini.backend,
+    "hypercube"   = module.hypercube.backend,
+    "fits"        = module.fits.backend
+    "crayfits"    = module.crayfits.backend
+    "whisper"     = module.whisper.backend
+    "pandoc"      = module.pandoc.backend
+    "ocrpdf"      = module.ocrpdf.backend
+    "libreoffice" = module.libreoffice.backend
   }
 }
 
@@ -236,7 +257,8 @@ resource "google_monitoring_uptime_check_config" "availability" {
     "houdini",
     "hypercube",
     "ocrpdf",
-    "pandoc"
+    "pandoc",
+    "libreoffice"
   ])
   display_name = "${each.value}-availability"
   timeout      = "10s"
