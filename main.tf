@@ -13,6 +13,10 @@ terraform {
       source  = "hashicorp/google"
       version = "6.11.2"
     }
+    google-beta = {
+      source  = "hashicorp/google-beta"
+      version = "6.12.0"
+    }
   }
 
   backend "gcs" {
@@ -23,6 +27,11 @@ terraform {
 
 
 provider "google" {
+  alias   = "default"
+  project = var.project
+}
+
+provider "google-beta" {
   alias   = "default"
   project = var.project
 }
@@ -78,7 +87,7 @@ module "pandoc" {
 }
 
 module "whisper" {
-  source = "./modules/cloudrun"
+  source = "./modules/cloudrun-v2"
 
   name          = "whisper"
   project       = var.project
@@ -90,13 +99,14 @@ module "whisper" {
       port           = 8080
       liveness_probe = "/healthcheck"
       memory         = "16Gi"
+      cpu            = "4000m"
       gpus           = 1
     }
   ])
   regions = ["us-central1"]
   providers = {
-    google = google.default
-    docker = docker.local
+    google-beta = google-beta.default
+    docker      = docker.local
   }
 }
 
