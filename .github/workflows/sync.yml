@@ -45,8 +45,3 @@ jobs:
           docker pull islandora/fits:main
           docker tag islandora/fits:main us-docker.pkg.dev/${{ secrets.GCLOUD_PROJECT }}/shared/harvard-fits:main
           docker push us-docker.pkg.dev/${{ secrets.GCLOUD_PROJECT }}/shared/harvard-fits:main
-
-      - name: ⛴️
-        run: gh workflow run apply.yml
-        env:
-          GH_TOKEN: ${{ github.token }}
