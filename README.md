@@ -18,6 +18,51 @@ flowchart TD
     F[imagemagick fa:fa-magic-wand-sparkles]-- fa:fa-image derivative -->B
 ```
 
+## Services Available
+
+- https://microservices.libops.site/crayfits
+  - [Harvard File Information Toolset (FITS)](https://github.com/harvard-lts/fits)
+- https://microservices.libops.site/homarus
+  - ffmpeg
+    - audio/*
+    - video/*
+- https://microservices.libops.site/houdini
+  - Imagemagick
+    - image/*
+- https://microservices.libops.site/hypercube
+  - tesseract
+    - application/pdf
+    - image/*
+- https://microservices.libops.site/libreoffice
+  - libreoffice - convert microsoft documents to PDF
+- https://microservices.libops.site/ocrpdf
+  - add OCR to a PDF with no OCR
+- https://microservices.libops.site/pandoc
+  - [Pandoc](https://pandoc.org/) - convert various file formats using pandoc
+- https://microservices.libops.site/whisper
+  - OpenAI Whisper to generate VTT transcript files from audio and video
+    - audio/*
+    - video/*
+
+## Regions available
+
+All services are available in all regions (except OpenAI Whisper, which is only in us-central1 due to GPU support)
+
+| Region Name                 | City/Area                   |
+|-----------------------------|-----------------------------|
+| **us-east4**                | Ashburn, Virginia           |
+| **us-east5**                | Columbus, Ohio              |
+| **us-central1**             | Council Bluffs, Iowa        |
+| **us-west3**                | Salt Lake City, Utah        |
+| **us-west1**                | The Dalles, Oregon          |
+| **us-west4**                | Las Vegas, Nevada           |
+| **us-south1**               | Dallas, Texas               |
+| **northamerica-northeast1** | Montréal, Québec, Canada    |
+| **northamerica-northeast2** | Toronto, Ontario, Canada    |
+| **australia-southeast1**    | Sydney, New South Wales     |
+| **australia-southeast2**    | Melbourne, Victoria         |
+
+
 ## Install
 
 To use these managed service, in your ISLE `docker-compose.yml` you can point to the respective service to have it perform your derivative generation.
