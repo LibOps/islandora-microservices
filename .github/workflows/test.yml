@@ -1,6 +1,7 @@
 name: Integration Test
 
 on:
+  workflow_dispatch:
   push:
     branches-ignore:
       - main
@@ -8,7 +9,7 @@ env:
   TF_VAR_project: ${{ secrets.GCLOUD_PROJECT }}
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       id-token: write
       contents: read
