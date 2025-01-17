@@ -55,7 +55,7 @@ module "ocrpdf" {
       image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-ocrpdf:main",
       port           = 8080
       liveness_probe = "/healthcheck"
-      memory         = "2Gi"
+      memory         = "4Gi"
       cpu            = "2000m"
     }
   ])
@@ -120,6 +120,8 @@ module "houdini" {
       name           = "houdini",
       image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-imagemagick:main",
       port           = 8080
+      memory         = "8Gi"
+      cpu            = "2000m"
       liveness_probe = "/healthcheck"
     }
   ])
@@ -140,6 +142,8 @@ module "libreoffice" {
       name           = "libreoffice",
       image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-libreoffice:main",
       port           = 8080
+      memory         = "4Gi"
+      cpu            = "1000m"
       liveness_probe = "/healthcheck"
     }
   ])
@@ -160,6 +164,8 @@ module "homarus" {
       image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-ffmpeg:main",
       port           = 8080
       liveness_probe = "/healthcheck"
+      memory         = "8Gi"
+      cpu            = "2000m"
     }
   ])
   providers = {
@@ -178,6 +184,8 @@ module "hypercube" {
       name           = "hypercube",
       image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-tesseract:main",
       port           = 8080
+      memory         = "8Gi"
+      cpu            = "2000m"
       liveness_probe = "/healthcheck"
     }
   ])
@@ -195,8 +203,8 @@ module "fits" {
   containers = tolist([
     {
       name   = "fits",
-      image  = "us-docker.pkg.dev/${var.project}/shared/harvard-fits:main",
-      memory = "2Gi"
+      image  = "islandora/fits:main",
+      memory = "8Gi"
       cpu    = "2000m"
     }
   ])
@@ -216,6 +224,8 @@ module "crayfits" {
     {
       name           = "crayfits",
       image          = "us-docker.pkg.dev/${var.project}/shared/scyllaridae-fits:main",
+      memory         = "4Gi"
+      cpu            = "2000m"
       liveness_probe = "/healthcheck"
     }
   ])
