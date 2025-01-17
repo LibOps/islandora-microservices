@@ -3,15 +3,15 @@ terraform {
   required_providers {
     docker = {
       source  = "kreuzwerker/docker"
-      version = "3.0.1"
+      version = "3.0.2"
     }
     github = {
       source  = "integrations/github"
-      version = "6.2.1"
+      version = "6.5.0"
     }
     google = {
       source  = "hashicorp/google"
-      version = "5.29.1"
+      version = "6.16.0"
     }
   }
 
