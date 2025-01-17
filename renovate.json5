@@ -3,6 +3,14 @@
     'config:best-practices',
     ':rebaseStalePrs',
   ],
+  ignorePaths: [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/__tests__/**",
+    "**/tests/**",
+    "**/__fixtures__/**"
+  ],
   packageRules: [
     {
       matchPackageNames: [
