@@ -5,6 +5,6 @@ output "backend" {
 output "urls" {
   value = {
     for region, service in google_cloud_run_v2_service.cloudrun :
-    region => service.status[0].url
+    region => service.uri
   }
 }
