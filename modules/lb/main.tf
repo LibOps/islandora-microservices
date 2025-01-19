@@ -64,7 +64,7 @@ resource "google_compute_url_map" "default" {
     https_redirect = true
     strip_query    = true
     host_redirect  = "github.com"
-    path_redirect  = "LibOps/islandora-microservices"
+    path_redirect  = "libops/islandora-microservices"
   }
 
   path_matcher {
